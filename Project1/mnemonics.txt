@@ -1,0 +1,59 @@
+#include <iostream>
+#include "myStack.h"
+#include "myStack.cpp"
+using namespace std;
+
+
+Stack <char> s;
+void mnemonics(const char * str)
+{
+	if (*str == '\0')
+	{
+		s.display();
+		cout << "  ";
+		return;
+	}
+	else if (*str == '0' || *str == '1')
+	{
+
+		mnemonics(str + 1);
+	}
+	else if (*str >= '1' && *str <= '9')
+	{
+		if (*str >= '8')
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				s.push(char((*str - '0' - 2) * 3 + 65 + i + 1));
+			}
+			mnemonics(str + 1);
+			s.pop();
+		}
+		else
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				if (char((*str - '0' - 2) * 3 + 65 + i) == 'Q' || char((*str - '0' - 2) * 3 + 65 + i) == 'R')
+				{
+					s.push(char((*str - '0' - 2) * 3 + 65 + i + 1));
+				}
+				else
+				{
+					s.push(char((*str - '0' - 2) * 3 + 65 + i + 1));
+				}
+				mnemonics(str + 1);
+				s.pop();
+			}
+		}
+	}	
+}
+int main()
+{
+
+	mnemonics("901234");
+
+	cout << "\n";
+	system("pause");
+
+	return 0;
+}

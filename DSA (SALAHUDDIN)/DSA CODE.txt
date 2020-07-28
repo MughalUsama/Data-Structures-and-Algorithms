@@ -1,0 +1,103 @@
+// nd array class 
+
+#include <iostream>
+using namespace std;
+
+class NDArrays
+{
+private:
+	int * dimensionSize;
+	int noOfDimensions;
+	int *arr;
+public:
+	NDArrays();
+	~NDArrays();
+	NDArrays(int noOfDim, int * dimSize);
+	void setValue(int *indexSet, int val);
+	int getValue(int * indexSet);
+};
+
+NDArrays::NDArrays()
+{
+	this->dimensionSize = (int *)0;
+	this->arr = (int *)0;
+	this -> noOfDimensions = 0;
+}
+
+NDArrays::~NDArrays()
+{
+	if (this->arr)
+	{
+		delete[] this->arr;
+		this->arr = (int*)0;
+	}
+	if (this->dimensionSize)
+	{
+		delete[] this->dimensionSize;
+		this->dimensionSize = (int*)0;
+	}
+	this->noOfDimensions = 0;
+}
+
+NDArrays::NDArrays(int noOfDim, int * dimSize)
+{
+	if (dimSize > 0)
+	{
+		this->noOfDimensions = noOfDim;
+		this->dimensionSize = new int[this -> noOfDimensions];     // allocating array for dimensionsList
+		for (int i = 0; i < this->noOfDimensions; i++)
+			this->dimensionSize[i] = dimSize[i];
+		int totalSizeOfArr = dimSize[0];
+		for (int i = 1; i < this -> noOfDimensions; i++)
+		{
+			totalSizeOfArr = totalSizeOfArr * dimSize[i];
+		}
+		this->arr = new int[totalSizeOfArr];      // allocating 1D array to map ND array
+	}
+}
+
+void NDArrays::setValue(int * indexSet, int value)
+{
+	if (this -> noOfDimensions > 0)
+	{
+		int skippedElem = 1;
+		int j = 1;
+		for (; j < this->noOfDimensions; j++)
+			skippedElem = skippedElem * this->dimensionSize[j];        // first index * (All except first dimension)
+		skippedElem = skippedElem * indexSet[0];
+		if(this -> noOfDimensions > 2)                  // add second last * (last Dimension)
+			skippedElem = skippedElem + (indexSet[this->noOfDimensions - 2] * this->dimensionSize[this->noOfDimensions - 1]);
+		this->arr[skippedElem + (indexSet[this->noOfDimensions - 1])] = value;       // add last index
+	}
+}
+
+
+int NDArrays::getValue(int * indexSet)
+{
+	if (noOfDimensions > 0)
+	{
+		int skippedElem = 0;
+		int j = 1;
+		for (; j < this->noOfDimensions; j++)
+			skippedElem = skippedElem + this->dimensionSize[j];        // first index * (All except first dimension)
+		skippedElem = skippedElem * indexSet[0];
+		if (this->noOfDimensions > 2)                  // add second last * (last Dimension)
+			skippedElem = skippedElem + (indexSet[this->noOfDimensions - 2] * this->dimensionSize[this->noOfDimensions - 1]);
+		return this->arr[skippedElem + (indexSet[this->noOfDimensions - 1])];       // add last index
+	}
+}
+
+
+int main()
+{
+	int dimensionSize[2] = { 3,3 };
+	NDArrays arr(2, dimensionSize);
+	int indexSet[2] = { 1,1 };
+	arr.setValue(indexSet, 1);
+	cout << arr.getValue(indexSet);
+	cout << '\n';
+	return 0;
+}
+
+// break the loop
+

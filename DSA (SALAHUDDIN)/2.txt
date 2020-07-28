@@ -1,0 +1,131 @@
+#ifndef LINKSTACK_H
+#define LINKSTACK_H
+#include<iostream>
+using namespace std;
+
+
+template<class T>
+class LinkStack
+{
+private:
+	Node<T> * head;
+	//void swap(int index1, int index2);
+public:
+	LinkStack();
+	~LinkStack();
+	LinkStack(const LinkStack<T> & ref);
+	LinkStack<T> & operator =(const LinkStack<T> & ref);
+	void push(T v);
+	T pop();
+	int getLength() const;
+	
+	
+};
+template<class T>
+LinkStack<T>::LinkStack()
+{
+	head = nullptr;
+}
+template<class T>
+LinkStack<T>::~LinkStack()
+{
+	if (head != nullptr)
+	{
+		Node<T> * temp = head;
+		while (temp != 0)
+		{
+			temp = temp->next;
+			delete head;
+			head = temp;
+		}
+		head = 0;
+		temp = 0;
+	}
+}
+template<class T>
+void LinkStack<T>::push(T v)
+{
+	if (head == nullptr)
+	{
+		head = new Node<T>;
+		head->value = v;
+		head->next = 0;
+	}
+	else
+	{
+		Node<T> * temp = head;
+		while (temp->next != 0)
+		{
+			temp = temp->next;
+		}
+		temp->next = new Node<T>;
+		temp = temp->next;
+		temp->value = v;
+		temp->next = 0;
+	}
+}
+template<class T>
+int LinkStack<T>::getLength() const
+{
+	Node<T> * temp = head;
+	int length = 0;
+	while (temp != 0)
+	{
+		length++;
+		temp = temp->next;
+	}
+	return length;
+}
+template<class T>
+LinkStack<T>::LinkStack(const LinkStack<T> & ref)
+{
+	int length = ref.getLength();
+	Node<T> * temp = ref.head;
+	for (int i = 0; i < length; i++)
+	{
+		this->addElement(temp->value);
+		temp = temp->next;
+	}
+}
+template<class T>
+LinkStack<T> & LinkStack<T>::operator=(const LinkStack<T> & ref)
+{
+	this->~LinkStack();
+	int length = ref.getLength();
+	Node<T> * temp = ref.head;
+	for (int i = 0; i < length; i++)
+	{
+		this->addElement(temp->value);
+		temp = temp->next;
+	}
+	return *this;
+}
+template<class T>
+T LinkStack<T>::pop()
+{
+	int length = getLength();
+	if (length == 0)
+	{
+		throw "no element in link stack\n";
+	}
+	if (length != 1)
+	{
+		Node<T> * temp = head;
+		int i = 0;
+		while (i < length -2 )
+		{
+			temp = temp->next;
+			i++;
+		}
+		T v = temp->next->value;
+		delete temp->next;
+		temp->next = 0;
+		return v;
+	}
+	T v = head->value;
+	delete head;
+	head = 0;
+	return v;
+}
+
+#endif // !STACK_H

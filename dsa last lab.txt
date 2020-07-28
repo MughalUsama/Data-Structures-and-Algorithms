@@ -1,0 +1,23 @@
+int stringHash::getHash(const string & s)
+{
+	int length = s.length(),asciSum=0;
+	for (int i = 0;i < length;i = i + 1)
+	{
+		asciSum = asciSum + s[i];
+	}
+	int sum = 0, sum1 = sum, constant = 255;
+	if (asciSum > 256)
+	{
+		asciSum = sum1;
+		sum1 = 0;
+		while (asciSum)
+		{
+			sum = asciSum;
+			sum1 = sum1 + sum&constant;
+			asciSum = asciSum >> 8;
+		}
+
+	}
+	char temp = sum1;
+	return  ~temp;
+}
